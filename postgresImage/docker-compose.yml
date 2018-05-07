@@ -1,0 +1,11 @@
+version: '3.1'
+services:
+   database:
+    image: postgres:latest
+    container_name: postgreslab
+    environment:
+      POSTGRES_PASSWORD: root
+      POSTGRES_USER: root
+      POSTGRES_DB: postgreslab
+    ports:
+      - "5432:5432"
