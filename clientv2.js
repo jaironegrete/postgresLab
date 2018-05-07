@@ -1,30 +1,14 @@
-const pg        = require('pg');
-const express   = require('express');
-const app       = express();
+var pg = require('pg');
+conString = 'postgresql://root:root@localhost/postgreslab';
 
-const config = {
-    user: 'root',
-    database: 'postgreslab',
-    password: 'root',
-    port: 5432
-};
-
-// pool takes the object above -config- as parameter
-const pool = new pg.Pool(config);
-
-app.get('/', (req, res, next) => {
-   pool.connect(function (err, client, done) {
-       if (err) {
-           console.log("Can not connect to the DB" + err);
-       }
-		   client.on('notification', function(msg) {
-		console.log(msg);
-	  });
-	  var query = client.query("LISTEN addedrecord");
-	  console.log(query);
-   })
-});
-
-app.listen(4000, function () {
-    console.log('Server is running.. on Port 4000');
+var client = new pg.Client(conString);
+client.connect(function(err) {
+  if(err) {
+    return console.error('could not connect to postgres', err);
+  }
+    client.connect();
+    client.query('LISTEN "loc_update"');
+    client.on('notification', function(data) {
+        console.log(data.payload);
+    });
 });
